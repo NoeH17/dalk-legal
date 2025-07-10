@@ -5,26 +5,64 @@
   <title>Eliminación de Datos - Dalk</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
+    :root {
+      --primary-color: #0052c4;
+      --background-color: #e0ecff;
+      --text-color: #162c43;
+      --container-bg: #ffffff;
+      --container-shadow: #ccdbff;
+    }
+
     body {
-      background: #e0ecff;
-      color: #162c43;
+      background: var(--background-color);
+      color: var(--text-color);
       font-family: sans-serif;
       margin: 0;
       padding: 0;
     }
+
     .container {
+      width: 90%;
       max-width: 700px;
       margin: 40px auto;
-      background: #fff;
+      background: var(--container-bg);
       border-radius: 12px;
-      box-shadow: 0 2px 8px #ccdbff;
-      padding: 32px;
+      box-shadow: 0 2px 8px var(--container-shadow);
+      padding: 24px;
+      box-sizing: border-box;
     }
+
     h1 {
-      color: #0052c4;
+      color: var(--primary-color);
+      font-size: 1.6rem;
+      margin-bottom: 1.2rem;
+      text-align: center;
     }
+
+    p {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 1.2rem;
+    }
+
     a {
-      color: #0052c4;
+      color: var(--primary-color);
+      word-break: break-word;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 16px;
+        margin: 20px auto;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      p {
+        font-size: 0.95rem;
+      }
     }
   </style>
 </head>
