@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Test Deep Links - Dalk</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 40px;
+      background: #f5f5f5;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    button {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      margin: 10px 0;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+      background: #0080C4;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #163143;
+    }
+    .info {
+      background: #e3f2fd;
+      padding: 15px;
+      border-radius: 5px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔗 Test Deep Links - Dalk</h1>
+    
+    <h2>📱 Custom Scheme (dalkpaseos://)</h2>
+    
+    <button onclick="openDeepLink('dalkpaseos://redirect/verificamex?session_id=test_123&user_id=user_456')">
+      ✅ Abrir Pantalla de Verificación
+    </button>
+
+    <button onclick="openDeepLink('dalkpaseos://verificamex/success')">
+      🎉 Simular Verificación Exitosa
+    </button>
+
+    <button onclick="openDeepLink('dalkpaseos://verificamex/failed')">
+      ❌ Simular Verificación Fallida
+    </button>
+
+    <h2>🌐 Universal Links (HTTPS)</h2>
+    
+    <button onclick="openDeepLink('https://dalk.app/redirect/verificamex?session_id=test_123&user_id=user_456')">
+      🔐 Abrir con Universal Link
+    </button>
+
+    <div class="info">
+      <strong>📝 Nota:</strong><br>
+      - En Android: Asegúrate de tener la app instalada<br>
+      - En iOS: Los deep links funcionan mejor desde apps nativas<br>
+      - En web: Los deep links se abrirán en nueva pestaña
+    </div>
+  </div>
+
+  <script>
+    function openDeepLink(url) {
+      console.log('🔗 Abriendo deep link:', url);
+      
+      // Intentar abrir el deep link
+      const link = document.createElement('a');
+      link.href = url;
+      link.click();
+      
+      // Alternativa: window.location
+      // window.location.href = url;
+      
+      // Mostrar feedback
+      alert('📱 Intentando abrir: ' + url + '\n\n' +
+            'Si la app no se abre:\n' +
+            '1. Verifica que esté instalada\n' +
+            '2. En Android, usa: adb shell am start -a android.intent.action.VIEW -d "' + url + '" com.dalk.app');
+    }
+  </script>
+</body>
+</html>
