@@ -1,16 +1,828 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dalk Legal</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DALK - Paseadores de Perros Verificados</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --azul-principal: #0080C4;
+            --azul-oscuro: #163143;
+            --azul-claro: #E0ECFF;
+            --azul-grisaceo: #CCDBFF;
+            --naranja-acento: #CB5014;
+            --texto-oscuro: #1a1a1a;
+            --texto-claro: #666666;
+            --blanco: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            color: var(--texto-oscuro);
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--blanco);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--azul-oscuro);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--texto-oscuro);
+            font-weight: 500;
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-menu a:hover {
+            color: var(--azul-principal);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--azul-oscuro);
+        }
+
+        /* HERO SECTION */
+        .hero {
+            margin-top: 70px;
+            min-height: 90vh;
+            background: linear-gradient(135deg, var(--azul-principal) 0%, var(--azul-oscuro) 100%);
+            color: var(--blanco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+            top: -50px;
+            right: -50px;
+        }
+
+        .hero::after {
+            content: '';
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 50%;
+            bottom: 50px;
+            left: -50px;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .hero-text p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            opacity: 0.95;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .hero-btn {
+            display: inline-block;
+            background: var(--naranja-acento);
+            color: var(--blanco);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            animation: fadeInUp 0.8s ease-out 0.4s both;
+        }
+
+        .hero-btn:hover {
+            background: #A64512;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(203, 80, 20, 0.3);
+        }
+
+        .hero-phone {
+            position: relative;
+            animation: fadeInRight 0.8s ease-out 0.3s both;
+        }
+
+        .phone-mockup {
+            background: var(--blanco);
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            max-width: 300px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .phone-screen {
+            background: linear-gradient(135deg, var(--azul-claro) 0%, var(--azul-grisaceo) 100%);
+            border-radius: 35px;
+            overflow: hidden;
+            aspect-ratio: 9 / 20;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--azul-oscuro);
+            text-align: center;
+            padding: 2rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background: var(--azul-principal);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--blanco);
+        }
+
+        /* SECCIÓN QUIÉNES SOMOS */
+        .about {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--azul-oscuro);
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--texto-claro);
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            line-height: 1.8;
+        }
+
+        /* SECCIÓN VENTAJAS */
+        .features {
+            background: linear-gradient(180deg, var(--azul-claro) 0%, var(--blanco) 100%);
+            padding: 5rem 2rem;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .features-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: var(--blanco);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 5px 20px rgba(0, 128, 196, 0.1);
+            transition: all 0.3s ease;
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 128, 196, 0.2);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--azul-principal), var(--azul-grisaceo));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: var(--blanco);
+            margin: 0 auto 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            color: var(--azul-oscuro);
+        }
+
+        .feature-card p {
+            color: var(--texto-claro);
+            font-size: 0.95rem;
+        }
+
+        /* SECCIÓN DESCARGA */
+        .download {
+            padding: 5rem 2rem;
+            background: linear-gradient(135deg, var(--azul-oscuro) 0%, var(--azul-principal) 100%);
+            color: var(--blanco);
+            text-align: center;
+        }
+
+        .download-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .download-text h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .download-text p {
+            font-size: 1.2rem;
+            opacity: 0.95;
+            margin-bottom: 2rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: var(--naranja-acento);
+            color: var(--blanco);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .download-btn:hover:not(:disabled) {
+            background: #A64512;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(203, 80, 20, 0.3);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .download-qr {
+            text-align: center;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--azul-oscuro);
+            color: var(--blanco);
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 0.5rem;
+        }
+
+        .footer-section a {
+            color: var(--azul-claro);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: var(--naranja-acento);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            background: var(--azul-principal);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--naranja-acento);
+            transform: translateY(-5px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+            padding-top: 2rem;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* ANIMACIONES */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* RESPONSIVIDAD */
+        @media (max-width: 768px) {
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 70px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: var(--blanco);
+                gap: 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu a {
+                padding: 1rem 2rem;
+                display: block;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .hero-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .hero-text h1 {
+                font-size: 2rem;
+            }
+
+            .hero-text p {
+                font-size: 1rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .download-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .download-text h2 {
+                font-size: 1.8rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .phone-mockup {
+                max-width: 250px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .navbar-container {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero {
+                margin-top: 60px;
+                padding: 1.5rem;
+                min-height: 100vh;
+            }
+
+            .hero-text h1 {
+                font-size: 1.5rem;
+            }
+
+            .hero-text p {
+                font-size: 0.9rem;
+            }
+
+            .hero-btn {
+                padding: 0.8rem 1.5rem;
+                font-size: 0.9rem;
+            }
+
+            .section-title {
+                font-size: 1.5rem;
+            }
+
+            .section-subtitle {
+                font-size: 0.95rem;
+            }
+
+            .feature-card {
+                padding: 1.5rem;
+            }
+
+            .feature-icon {
+                width: 60px;
+                height: 60px;
+                font-size: 1.5rem;
+            }
+
+            .download-text h2 {
+                font-size: 1.5rem;
+            }
+
+            .download-text p {
+                font-size: 1rem;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
-  <h1>Bienvenido a Dalk Legal</h1>
-  <ul>
-    <li><a href="privacy.html">Política de privacidad</a></li>
-    <li><a href="terms.html">Términos y condiciones</a></li>
-    <li><a href="delete.html">Eliminar cuenta</a></li>
-  </ul>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="navbar-container">
+            <a href="#home" class="logo">
+                <img src="DALKLOGO_Negativo_NS.png" alt="DALK Logo">
+                <span>DALK</span>
+            </a>
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#about">Quiénes somos</a></li>
+                <li><a href="#features">Qué ofrecemos</a></li>
+                <li><a href="#download">Descarga</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HERO SECTION -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1>DALK</h1>
+                <p>Conectamos dueños de perros con paseadores verificados</p>
+                <p style="font-size: 1rem; opacity: 0.9; margin-bottom: 2rem;">Seguro, confiable y fácil de usar</p>
+                <button class="hero-btn">Descargar próximamente en Play Store</button>
+            </div>
+            <div class="hero-phone">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="qr-placeholder">
+                            <i class="fas fa-qrcode" style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ABOUT SECTION -->
+    <section class="about" id="about">
+        <h2 class="section-title">Quiénes somos</h2>
+        <p class="section-subtitle">
+            Somos una app móvil que conecta a dueños de perros con paseadores responsables y verificados, garantizando seguridad y bienestar animal. Nuestro objetivo es facilitar la vida de las mascotas y sus dueños mediante una plataforma confiable, intuitiva y segura.
+        </p>
+    </section>
+
+    <!-- FEATURES SECTION -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <div class="features-title">
+                <h2 class="section-title">Qué ofrecemos</h2>
+                <p class="section-subtitle">Descubre todas las ventajas que DALK tiene para ti y tu mascota</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <h3>Reserva de paseos</h3>
+                    <p>Agendra paseos con facilidad. Selecciona fecha, hora y duración que se adapte a tus necesidades.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3>Geolocalización GPS</h3>
+                    <p>Rastreo en tiempo real del paseo de tu perro. Sabe exactamente dónde está en cada momento.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <h3>Perfiles verificados</h3>
+                    <p>Todos nuestros paseadores han sido rigurosamente verificados para garantizar la confianza.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>Valoraciones y reseñas</h3>
+                    <p>Consulta las reseñas de otros dueños. Elige al mejor paseador según la experiencia de otros.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-magic"></i>
+                    </div>
+                    <h3>Recomendaciones inteligentes</h3>
+                    <p>Recibe sugerencias personalizadas de paseadores basadas en tus preferencias y ubicación.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-lock"></i>
+                    </div>
+                    <h3>Pago seguro</h3>
+                    <p>Integración con sistemas de pago confiables. Tus transacciones siempre protegidas.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <h3>Notificaciones instantáneas</h3>
+                    <p>Recibe alertas en tiempo real sobre cada paso importante del paseo de tu mascota.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <h3>Chat directo</h3>
+                    <p>Comunícate con tu paseador en tiempo real. Coordina detalles sin complicaciones.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-user-circle"></i>
+                    </div>
+                    <h3>Perfil personalizado</h3>
+                    <p>Crea un perfil completo con información de tu perro. Guarda datos y preferencias.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DOWNLOAD SECTION -->
+    <section class="download" id="download">
+        <div class="download-content">
+            <div class="download-text">
+                <h2>Muy pronto</h2>
+                <p>Disponible en Play Store</p>
+                <p style="font-size: 1rem; opacity: 0.9;">Sé de los primeros en descargar DALK y conecta con los mejores paseadores de tu zona.</p>
+                <button class="download-btn" disabled>
+                    <i class="fas fa-google-play"></i> Descargar (próximamente)
+                </button>
+            </div>
+            <div class="download-qr">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="qr-placeholder">
+                            <i class="fas fa-qrcode" style="font-size: 4rem; opacity: 0.3;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Sobre DALK</h4>
+                <ul>
+                    <li><a href="#about">Quiénes somos</a></li>
+                    <li><a href="#features">Qué ofrecemos</a></li>
+                    <li><a href="#">Términos de servicio</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Contacto</h4>
+                <ul>
+                    <li><a href="mailto:info@dalk.com">info@dalk.com</a></li>
+                    <li>Guadalajara, Jalisco, MX</li>
+                    <li><a href="#">Formulario de contacto</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h4>Redes sociales</h4>
+                <div class="social-links">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 DALK. Todos los derechos reservados. | Desarrollado con ❤️ para los amantes de los perros</p>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Stagger feature cards animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationDelay = `${index * 0.1}s`;
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+    </script>
 </body>
 </html>
