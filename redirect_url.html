@@ -176,24 +176,52 @@
     </p>
   </div>
   
-  <script>
-    console.log('✅ Página de verificación completada cargada');
-    console.log('📍 Redirect URL de Verificamex exitoso');
-    console.log('⏰ Timestamp:', new Date().toISOString());
+    <script>
+        console.log('✅ Página de verificación completada cargada');
+        console.log('📍 Redirect URL de Verificamex exitoso');
+        console.log('⏰ Timestamp:', new Date().toISOString());
+        
+        // Comunicación con Flutter WebView si está disponible
+        if (window.flutter_inappwebview) {
+        try {
+            window.flutter_inappwebview.callHandler('verification_completed', {
+            status: 'success',
+            timestamp: new Date().toISOString(),
+            message: 'Verificación completada - documentos en procesamiento'
+            });
+            console.log('✅ Handler de Flutter notificado');
+        } catch (e) {
+            console.log('ℹ️ Flutter handler no disponible (normal en web)');
+        }
+        }
+
     
-    // Comunicación con Flutter WebView si está disponible
-    if (window.flutter_inappwebview) {
-      try {
-        window.flutter_inappwebview.callHandler('verification_completed', {
-          status: 'success',
-          timestamp: new Date().toISOString(),
-          message: 'Verificación completada - documentos en procesamiento'
+        window.addEventListener('load', () => {
+        try {
+            // Obtener parámetros que Verificamex agrega a la URL de redirección
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get('session_id');
+            const userId = params.get('user_id');
+
+            console.log('🔍 Parámetros recibidos:', { sessionId, userId });
+
+            // Solo redirige si ambos existen
+            if (sessionId && userId) {
+            const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(userId)}`;
+            console.log('➡️ Redirigiendo al esquema nativo:', deepLink);
+
+            // Redirigir después de un pequeño delay
+            setTimeout(() => {
+                window.location.href = deepLink;
+            }, 2000); // Espera 2s para que el usuario vea el mensaje
+            } else {
+            console.warn('⚠️ Faltan parámetros para redirigir al esquema nativo.');
+            }
+        } catch (error) {
+            console.error('❌ Error al procesar redirección:', error);
+        }
         });
-        console.log('✅ Handler de Flutter notificado');
-      } catch (e) {
-        console.log('ℹ️ Flutter handler no disponible (normal en web)');
-      }
-    }
-  </script>
+    </script>
+
 </body>
 </html>
