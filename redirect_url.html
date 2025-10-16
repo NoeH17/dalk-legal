@@ -177,51 +177,74 @@
   </div>
   
     <script>
-        console.log('✅ Página de verificación completada cargada');
-        console.log('📍 Redirect URL de Verificamex exitoso');
-        console.log('⏰ Timestamp:', new Date().toISOString());
-        
-        // Comunicación con Flutter WebView si está disponible
-        if (window.flutter_inappwebview) {
+    console.log('✅ Página de verificación completada cargada');
+    console.log('📍 Redirect URL de Verificamex exitoso');
+    console.log('⏰ Timestamp:', new Date().toISOString());
+    
+    // Comunicación con Flutter WebView si está disponible
+    if (window.flutter_inappwebview) {
         try {
-            window.flutter_inappwebview.callHandler('verification_completed', {
+        window.flutter_inappwebview.callHandler('verification_completed', {
             status: 'success',
             timestamp: new Date().toISOString(),
             message: 'Verificación completada - documentos en procesamiento'
-            });
-            console.log('✅ Handler de Flutter notificado');
-        } catch (e) {
-            console.log('ℹ️ Flutter handler no disponible (normal en web)');
-        }
-        }
-
-    
-        window.addEventListener('load', () => {
-        try {
-            // Obtener parámetros que Verificamex agrega a la URL de redirección
-            const params = new URLSearchParams(window.location.search);
-            const sessionId = params.get('session_id');
-            const userId = params.get('user_id');
-
-            console.log('🔍 Parámetros recibidos:', { sessionId, userId });
-
-            // Solo redirige si ambos existen
-            if (sessionId && userId) {
-            const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(userId)}`;
-            console.log('➡️ Redirigiendo al esquema nativo:', deepLink);
-
-            // Redirigir después de un pequeño delay
-            setTimeout(() => {
-                window.location.href = deepLink;
-            }, 2000); // Espera 2s para que el usuario vea el mensaje
-            } else {
-            console.warn('⚠️ Faltan parámetros para redirigir al esquema nativo.');
-            }
-        } catch (error) {
-            console.error('❌ Error al procesar redirección:', error);
-        }
         });
+        console.log('✅ Handler de Flutter notificado');
+        } catch (e) {
+        console.log('ℹ️ Flutter handler no disponible (normal en web)');
+        }
+    }
+
+    // --- 🔘 AGREGAR BOTÓN PARA PROBAR EL DEEP LINK ---
+    const button = document.createElement('button');
+    button.textContent = 'Probar redirección a Dalk';
+    button.style.background = '#10B981';
+    button.style.color = '#FFFFFF';
+    button.style.border = 'none';
+    button.style.padding = '12px 24px';
+    button.style.borderRadius = '10px';
+    button.style.fontSize = '16px';
+    button.style.fontWeight = '600';
+    button.style.cursor = 'pointer';
+    button.style.marginTop = '30px';
+    button.style.boxShadow = '0 4px 15px rgba(16, 185, 129, 0.3)';
+    
+    document.querySelector('.container').appendChild(button);
+
+    // 🔧 Valores hardcodeados de prueba
+    const testSessionId = 'session_prueba_001';
+    const testUserId = '8a7c1c9e-55b5-4c47-9bfa-29f5cd1f2c18'; // cambia por tu UUID real si lo deseas
+
+    button.addEventListener('click', () => {
+        const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(testSessionId)}&user_id=${encodeURIComponent(testUserId)}`;
+        console.log('➡️ Intentando abrir esquema nativo:', deepLink);
+        window.location.href = deepLink;
+    });
+
+    // --- 🔁 Mantiene tu lógica automática por si deseas probarla también ---
+    window.addEventListener('load', () => {
+        try {
+        const params = new URLSearchParams(window.location.search);
+        const sessionId = params.get('session_id');
+        const userId = params.get('user_id');
+
+        console.log('🔍 Parámetros recibidos:', { sessionId, userId });
+
+        if (sessionId && userId) {
+            const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(userId)}`;
+            console.log('➡️ Redirigiendo automáticamente al esquema nativo:', deepLink);
+            setTimeout(() => {
+            window.location.href = deepLink;
+            }, 2000);
+        } else {
+            console.warn('⚠️ Faltan parámetros para redirigir automáticamente. Usa el botón de prueba.');
+        }
+        } catch (error) {
+        console.error('❌ Error al procesar redirección:', error);
+        }
+    });
     </script>
+
 
 </body>
 </html>
