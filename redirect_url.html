@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Verificación Completada - Dalk</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      text-align: center; 
+      padding: 40px 20px; 
+      background: linear-gradient(135deg, #163143 0%, #0080C4 100%);
+      color: #E0ECFF; 
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .container { 
+      max-width: 400px; 
+      background: rgba(22, 49, 67, 0.9);
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 8px 32px rgba(0, 128, 196, 0.3);
+      border: 1px solid rgba(224, 236, 255, 0.2);
+    }
+    
+    .success-icon {
+      width: 80px;
+      height: 80px;
+      background: #10B981;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      animation: pulse 2s infinite;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+    }
+    
+    .success-icon::before {
+      content: '✓';
+      font-size: 40px;
+      color: #FFFFFF;
+      font-weight: bold;
+    }
+    
+    .title { 
+      color: #10B981;
+      font-size: 24px;
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    
+    .subtitle {
+      color: #CCDBFF;
+      font-size: 16px;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+    
+    .status-card {
+      background: rgba(0, 128, 196, 0.1);
+      border-radius: 12px;
+      border: 1px solid rgba(0, 128, 196, 0.3);
+      padding: 20px;
+      margin: 24px 0;
+    }
+    
+    .status-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 0;
+      border-bottom: 1px solid rgba(224, 236, 255, 0.1);
+    }
+    
+    .status-item:last-child {
+      border-bottom: none;
+    }
+    
+    .status-label {
+      color: #CCDBFF;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    .status-value {
+      color: #10B981;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    
+    .processing-badge {
+      display: inline-block;
+      background: rgba(16, 185, 129, 0.2);
+      color: #10B981;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 13px;
+      font-weight: 600;
+      margin-top: 16px;
+    }
+    
+    .info-text {
+      color: #CCDBFF;
+      font-size: 14px;
+      margin-top: 24px;
+      padding: 16px;
+      background: rgba(0, 128, 196, 0.1);
+      border-radius: 12px;
+      border-left: 3px solid #0080C4;
+      text-align: left;
+      line-height: 1.6;
+    }
+    
+    .close-message {
+      color: #CCDBFF;
+      font-size: 13px;
+      margin-top: 24px;
+      opacity: 0.8;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+      }
+      50% { 
+        transform: scale(1.05);
+        box-shadow: 0 6px 25px rgba(16, 185, 129, 0.6);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="success-icon"></div>
+    
+    <h2 class="title">¡Verificación Completada!</h2>
+    
+    <p class="subtitle">
+      Has completado exitosamente el proceso de verificación de identidad con Verificamex.
+    </p>
+    
+    <div class="status-card">
+      <div class="status-item">
+        <span class="status-label">Estado del proceso</span>
+        <span class="status-value">✓ Completado</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Documentos recibidos</span>
+        <span class="status-value">✓ Enviados</span>
+      </div>
+      <div class="status-item">
+        <span class="status-label">Próximo paso</span>
+        <span class="status-value">En procesamiento</span>
+      </div>
+    </div>
+    
+    <div class="processing-badge">
+      🔄 Procesando documentos
+    </div>
+    
+    <div class="info-text">
+      <strong>📋 ¿Qué sigue?</strong><br><br>
+      Nuestro equipo está revisando tus documentos. Recibirás una notificación en tu app cuando la verificación esté lista.<br><br>
+      <strong>Tiempo estimado:</strong> 24-48 horas hábiles
+    </div>
+    
+    <p class="close-message">
+      Puedes cerrar esta ventana de forma segura.<br>
+      Regresa a la app de Dalk para continuar.
+    </p>
+  </div>
+  
+  <script>
+    console.log('✅ Página de verificación completada cargada');
+    console.log('📍 Redirect URL de Verificamex exitoso');
+    console.log('⏰ Timestamp:', new Date().toISOString());
+    
+    // Comunicación con Flutter WebView si está disponible
+    if (window.flutter_inappwebview) {
+      try {
+        window.flutter_inappwebview.callHandler('verification_completed', {
+          status: 'success',
+          timestamp: new Date().toISOString(),
+          message: 'Verificación completada - documentos en procesamiento'
+        });
+        console.log('✅ Handler de Flutter notificado');
+      } catch (e) {
+        console.log('ℹ️ Flutter handler no disponible (normal en web)');
+      }
+    }
+  </script>
+</body>
+</html>
