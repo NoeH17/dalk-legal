@@ -122,6 +122,39 @@
       margin-top: 24px;
       opacity: 0.8;
     }
+
+    .debug-info {
+      margin-top: 20px;
+      padding: 12px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      font-size: 12px;
+      text-align: left;
+      color: #CCDBFF;
+      font-family: monospace;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .test-button {
+      background: #10B981;
+      color: #FFFFFF;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      fontSize: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+      box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+      transition: all 0.3s ease;
+    }
+
+    .test-button:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
     
     @keyframes pulse {
       0%, 100% { 
@@ -170,81 +203,132 @@
       <strong>Tiempo estimado:</strong> 24-48 horas hábiles
     </div>
     
+    <button class="test-button" id="redirectButton">
+      🔄 Regresar a Dalk
+    </button>
+
+    <div class="debug-info" id="debugInfo">
+      <strong>🔧 Debug Info:</strong><br>
+      Cargando parámetros...
+    </div>
+    
     <p class="close-message">
-      Puedes cerrar esta ventana de forma segura.<br>
-      Regresa a la app de Dalk para continuar.
+      Si la redirección no funciona automáticamente,<br>
+      presiona el botón de arriba para regresar a la app.
     </p>
   </div>
   
-    <script>
+  <script>
     console.log('✅ Página de verificación completada cargada');
-    console.log('📍 Redirect URL de Verificamex exitoso');
+    console.log('📍 Redirect URL de Verificamex');
     console.log('⏰ Timestamp:', new Date().toISOString());
+
+    const debugInfo = document.getElementById('debugInfo');
+    const redirectButton = document.getElementById('redirectButton');
     
-    // Comunicación con Flutter WebView si está disponible
-    if (window.flutter_inappwebview) {
-        try {
-        window.flutter_inappwebview.callHandler('verification_completed', {
-            status: 'success',
-            timestamp: new Date().toISOString(),
-            message: 'Verificación completada - documentos en procesamiento'
-        });
-        console.log('✅ Handler de Flutter notificado');
-        } catch (e) {
-        console.log('ℹ️ Flutter handler no disponible (normal en web)');
-        }
+    function updateDebug(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      debugInfo.innerHTML += `<br>[${timestamp}] ${message}`;
+      debugInfo.scrollTop = debugInfo.scrollHeight;
     }
 
-    // --- 🔘 AGREGAR BOTÓN PARA PROBAR EL DEEP LINK ---
-    const button = document.createElement('button');
-    button.textContent = 'Probar redirección a Dalk';
-    button.style.background = '#10B981';
-    button.style.color = '#FFFFFF';
-    button.style.border = 'none';
-    button.style.padding = '12px 24px';
-    button.style.borderRadius = '10px';
-    button.style.fontSize = '16px';
-    button.style.fontWeight = '600';
-    button.style.cursor = 'pointer';
-    button.style.marginTop = '30px';
-    button.style.boxShadow = '0 4px 15px rgba(16, 185, 129, 0.3)';
-    
-    document.querySelector('.container').appendChild(button);
+    function extractParams() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session_id');
+        const userId = urlParams.get('user_id');
 
-    // 🔧 Valores hardcodeados de prueba
-    const testSessionId = 'session_1759113855564_seqxf60hvlj';
-    const testUserId = '0f956649-a4cf-471f-a465-ec30fc6a8891'; // cambia por tu UUID real si lo deseas
+        updateDebug(`URL completa: ${window.location.href}`);
+        updateDebug(`session_id: ${sessionId || 'NO ENCONTRADO'}`);
+        updateDebug(`user_id: ${userId || 'NO ENCONTRADO'}`);
 
-    button.addEventListener('click', () => {
-        const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(testSessionId)}&user_id=${encodeURIComponent(testUserId)}`;
-        console.log('➡️ Intentando abrir esquema nativo:', deepLink);
+        console.log('🔍 Parámetros extraídos:', { 
+          sessionId, 
+          userId,
+          fullURL: window.location.href 
+        });
+
+        return { sessionId, userId };
+      } catch (error) {
+        updateDebug(`❌ Error: ${error.message}`);
+        console.error('❌ Error extrayendo parámetros:', error);
+        return { sessionId: null, userId: null };
+      }
+    }
+
+    function attemptRedirect(sessionId, userId) {
+      if (!sessionId || !userId) {
+        updateDebug('⚠️ Faltan parámetros requeridos');
+        console.warn('⚠️ No se puede redirigir: faltan parámetros');
+        return false;
+      }
+
+      const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(userId)}`;
+      
+      updateDebug(`🔗 Deep link: ${deepLink}`);
+      console.log('➡️ Intentando redirección automática:', deepLink);
+
+      try {
         window.location.href = deepLink;
+        updateDebug('✅ Redirección iniciada');
+        return true;
+      } catch (error) {
+        updateDebug(`❌ Error en redirección: ${error.message}`);
+        console.error('❌ Error en redirección:', error);
+        return false;
+      }
+    }
+
+    // Comunicación con Flutter WebView si está disponible
+    if (window.flutter_inappwebview) {
+      try {
+        window.flutter_inappwebview.callHandler('verification_completed', {
+          status: 'success',
+          timestamp: new Date().toISOString(),
+          message: 'Verificación completada - documentos en procesamiento'
+        });
+        updateDebug('✅ Flutter WebView handler llamado');
+        console.log('✅ Handler de Flutter notificado');
+      } catch (e) {
+        updateDebug('ℹ️ Flutter handler no disponible');
+        console.log('ℹ️ Flutter handler no disponible (normal en web)');
+      }
+    }
+
+    // Extraer parámetros al cargar
+    const { sessionId, userId } = extractParams();
+
+    // Configurar botón de prueba
+    redirectButton.addEventListener('click', () => {
+      updateDebug('🖱️ Botón presionado manualmente');
+      
+      // Si tenemos parámetros de la URL, usarlos
+      if (sessionId && userId) {
+        attemptRedirect(sessionId, userId);
+      } else {
+        // Valores de prueba para desarrollo
+        const testSessionId = 'session_1759113855564_seqxf60hvlj';
+        const testUserId = '0f956649-a4cf-471f-a465-ec30fc6a8891';
+        updateDebug('⚠️ Usando valores de prueba');
+        attemptRedirect(testSessionId, testUserId);
+      }
     });
 
-    // --- 🔁 Mantiene tu lógica automática por si deseas probarla también ---
+    // Redirección automática después de 3 segundos
     window.addEventListener('load', () => {
-        try {
-        const params = new URLSearchParams(window.location.search);
-        const sessionId = params.get('session_id');
-        const userId = params.get('user_id');
-
-        console.log('🔍 Parámetros recibidos:', { sessionId, userId });
-
-        if (sessionId && userId) {
-            const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(userId)}`;
-            console.log('➡️ Redirigiendo automáticamente al esquema nativo:', deepLink);
-            setTimeout(() => {
-            window.location.href = deepLink;
-            }, 2000);
-        } else {
-            console.warn('⚠️ Faltan parámetros para redirigir automáticamente. Usa el botón de prueba.');
-        }
-        } catch (error) {
-        console.error('❌ Error al procesar redirección:', error);
-        }
+      if (sessionId && userId) {
+        updateDebug('⏳ Redirección automática en 3 segundos...');
+        setTimeout(() => {
+          const success = attemptRedirect(sessionId, userId);
+          if (!success) {
+            updateDebug('⚠️ Usa el botón para reintentar');
+          }
+        }, 3000);
+      } else {
+        updateDebug('⚠️ No se encontraron parámetros válidos');
+        updateDebug('💡 Usa el botón para probar con valores hardcodeados');
+      }
     });
-    </script>
-
-
+  </script>
 </body>
 </html>
