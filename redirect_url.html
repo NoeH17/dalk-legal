@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Verificación Completada - Dalk</title>
+  <title>Verificación Completada - Dalk (TEST MODE)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { 
@@ -52,6 +52,18 @@
       font-size: 24px;
       font-weight: 600;
       margin-bottom: 16px;
+    }
+
+    .test-mode-badge {
+      display: inline-block;
+      background: rgba(255, 165, 0, 0.2);
+      color: #FFA500;
+      padding: 6px 12px;
+      border-radius: 15px;
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 165, 0, 0.3);
     }
     
     .subtitle {
@@ -126,34 +138,49 @@
     .debug-info {
       margin-top: 20px;
       padding: 12px;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.5);
       border-radius: 8px;
-      font-size: 12px;
+      font-size: 11px;
       text-align: left;
-      color: #CCDBFF;
+      color: #FFD700;
       font-family: monospace;
-      max-height: 150px;
+      max-height: 300px;
       overflow-y: auto;
+      border: 1px solid rgba(255, 215, 0, 0.3);
     }
 
     .test-button {
       background: #10B981;
       color: #FFFFFF;
       border: none;
-      padding: 12px 24px;
+      padding: 14px 24px;
       border-radius: 10px;
-      fontSize: 16px;
+      font-size: 16px;
       font-weight: 600;
       cursor: pointer;
       margin-top: 20px;
       box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
       transition: all 0.3s ease;
+      width: 100%;
     }
 
     .test-button:hover {
       background: #059669;
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+    }
+
+    .warning-box {
+      background: rgba(255, 165, 0, 0.1);
+      border: 2px solid rgba(255, 165, 0, 0.3);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 20px;
+      text-align: left;
+    }
+
+    .warning-box strong {
+      color: #FFA500;
     }
     
     @keyframes pulse {
@@ -170,6 +197,7 @@
 </head>
 <body>
   <div class="container">
+    <div class="test-mode-badge">🧪 MODO DE PRUEBA</div>
     <div class="success-icon"></div>
     
     <h2 class="title">¡Verificación Completada!</h2>
@@ -207,9 +235,14 @@
       🔄 Regresar a Dalk
     </button>
 
+    <div class="warning-box">
+      <strong>⚠️ ADVERTENCIA DE TESTING:</strong><br>
+      <small>Usando valores hardcodeados para pruebas. En producción, estos vendrán automáticamente de Verificamex.</small>
+    </div>
+
     <div class="debug-info" id="debugInfo">
-      <strong>🔧 Debug Info:</strong><br>
-      Cargando parámetros...
+      <strong>🔧 DEBUG INFO (Modo Testing):</strong><br>
+      Inicializando...
     </div>
     
     <p class="close-message">
@@ -220,6 +253,7 @@
   
   <script>
     console.log('✅ Página de verificación completada cargada');
+    console.log('🧪 MODO DE PRUEBA ACTIVADO');
     console.log('📍 Redirect URL de Verificamex');
     console.log('⏰ Timestamp:', new Date().toISOString());
 
@@ -235,42 +269,105 @@
     function extractParams() {
       try {
         const urlParams = new URLSearchParams(window.location.search);
-        const sessionId = urlParams.get('session_id');
-        const userId = urlParams.get('user_id');
+        
+        // 🧪 VALORES HARDCODEADOS PARA TESTING
+        const HARDCODED_SESSION_ID = 'session_test_hardcoded_123';
+        const HARDCODED_USER_ID = '0f956649-a4cf-471f-a465-ec30fc6a8891';
+        
+        updateDebug('🧪 === MODO DE PRUEBA ACTIVADO ===');
+        updateDebug('🧪 Usando valores hardcodeados');
+        
+        // ✅ VERIFICAR SI HAY PARÁMETROS EN LA URL (para producción)
+        let sessionId = urlParams.get('session_id');
+        let userId = urlParams.get('user_id');
+        
+        // Si no están directamente, buscar en optionals
+        if (!sessionId || !userId) {
+          sessionId = sessionId || urlParams.get('optionals[session_id]');
+          userId = userId || urlParams.get('optionals[user_id]');
+        }
+
+        // 🧪 SI NO HAY PARÁMETROS, USAR HARDCODED
+        const useHardcoded = !sessionId || !userId;
+        
+        if (useHardcoded) {
+          updateDebug('⚠️ No se encontraron parámetros en URL');
+          updateDebug('🔄 Usando valores hardcodeados:');
+          sessionId = HARDCODED_SESSION_ID;
+          userId = HARDCODED_USER_ID;
+          updateDebug(`  session_id: ${sessionId}`);
+          updateDebug(`  user_id: ${userId}`);
+        } else {
+          updateDebug('✅ Parámetros encontrados en URL:');
+          updateDebug(`  session_id: ${sessionId}`);
+          updateDebug(`  user_id: ${userId}`);
+        }
 
         updateDebug(`URL completa: ${window.location.href}`);
-        updateDebug(`session_id: ${sessionId || 'NO ENCONTRADO'}`);
-        updateDebug(`user_id: ${userId || 'NO ENCONTRADO'}`);
+        
+        // ✅ LISTAR TODOS LOS PARÁMETROS RECIBIDOS
+        updateDebug('--- Parámetros en URL ---');
+        if (urlParams.toString()) {
+          for (const [key, value] of urlParams.entries()) {
+            updateDebug(`  ${key}: ${value}`);
+          }
+        } else {
+          updateDebug('  (ninguno - usando hardcoded)');
+        }
 
         console.log('🔍 Parámetros extraídos:', { 
           sessionId, 
           userId,
-          fullURL: window.location.href 
+          isHardcoded: useHardcoded,
+          fullURL: window.location.href,
+          allParams: Object.fromEntries(urlParams)
         });
 
-        return { sessionId, userId };
+        return { sessionId, userId, isHardcoded: useHardcoded };
       } catch (error) {
         updateDebug(`❌ Error: ${error.message}`);
         console.error('❌ Error extrayendo parámetros:', error);
-        return { sessionId: null, userId: null };
+        // En caso de error, usar hardcoded
+        return { 
+          sessionId: 'session_test_hardcoded_123', 
+          userId: '0f956649-a4cf-471f-a465-ec30fc6a8891',
+          isHardcoded: true
+        };
       }
     }
 
-    function attemptRedirect(sessionId, userId) {
+    function attemptRedirect(sessionId, userId, isHardcoded) {
       if (!sessionId || !userId) {
         updateDebug('⚠️ Faltan parámetros requeridos');
+        updateDebug(`  sessionId: ${sessionId || 'FALTA'}`);
+        updateDebug(`  userId: ${userId || 'FALTA'}`);
         console.warn('⚠️ No se puede redirigir: faltan parámetros');
         return false;
       }
 
       const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(userId)}`;
       
-      updateDebug(`🔗 Deep link: ${deepLink}`);
-      console.log('➡️ Intentando redirección automática:', deepLink);
+      updateDebug('--- GENERANDO DEEP LINK ---');
+      if (isHardcoded) {
+        updateDebug('🧪 Modo: TESTING (hardcoded)');
+      } else {
+        updateDebug('✅ Modo: PRODUCCIÓN (parámetros reales)');
+      }
+      updateDebug(`Deep link completo:`);
+      updateDebug(`  ${deepLink}`);
+      updateDebug('--- COMPONENTES ---');
+      updateDebug(`  Esquema: dalkpaseos://`);
+      updateDebug(`  Ruta: redirect_verificamex`);
+      updateDebug(`  Params: session_id=${sessionId}`);
+      updateDebug(`           user_id=${userId}`);
+      
+      console.log('➡️ Intentando redirección:', deepLink);
 
       try {
+        updateDebug('🚀 Ejecutando redirección...');
         window.location.href = deepLink;
         updateDebug('✅ Redirección iniciada');
+        updateDebug('⏳ Esperando que la app abra...');
         return true;
       } catch (error) {
         updateDebug(`❌ Error en redirección: ${error.message}`);
@@ -296,39 +393,40 @@
     }
 
     // Extraer parámetros al cargar
-    const { sessionId, userId } = extractParams();
+    const { sessionId, userId, isHardcoded } = extractParams();
 
-    // Configurar botón de prueba
+    // Configurar botón manual
     redirectButton.addEventListener('click', () => {
-      updateDebug('🖱️ Botón presionado manualmente');
-      
-      // Si tenemos parámetros de la URL, usarlos
-      if (sessionId && userId) {
-        attemptRedirect(sessionId, userId);
-      } else {
-        // Valores de prueba para desarrollo
-        const testSessionId = 'session_1759113855564_seqxf60hvlj';
-        const testUserId = '0f956649-a4cf-471f-a465-ec30fc6a8891';
-        updateDebug('⚠️ Usando valores de prueba');
-        attemptRedirect(testSessionId, testUserId);
-      }
+      updateDebug('🖱️ === BOTÓN PRESIONADO ===');
+      attemptRedirect(sessionId, userId, isHardcoded);
     });
 
     // Redirección automática después de 3 segundos
     window.addEventListener('load', () => {
       if (sessionId && userId) {
         updateDebug('⏳ Redirección automática en 3 segundos...');
+        updateDebug('💡 Puedes presionar el botón para probar manualmente');
         setTimeout(() => {
-          const success = attemptRedirect(sessionId, userId);
+          updateDebug('🚀 === INICIANDO REDIRECCIÓN AUTOMÁTICA ===');
+          const success = attemptRedirect(sessionId, userId, isHardcoded);
           if (!success) {
             updateDebug('⚠️ Usa el botón para reintentar');
           }
         }, 3000);
       } else {
-        updateDebug('⚠️ No se encontraron parámetros válidos');
-        updateDebug('💡 Usa el botón para probar con valores hardcodeados');
+        updateDebug('❌ Error crítico: No hay parámetros disponibles');
       }
     });
+
+    // Información adicional para debugging
+    updateDebug('--- INFORMACIÓN DEL SISTEMA ---');
+    updateDebug(`  User Agent: ${navigator.userAgent.substring(0, 50)}...`);
+    updateDebug(`  Plataforma: ${navigator.platform}`);
+    updateDebug(`  Idioma: ${navigator.language}`);
+    updateDebug('--- ESTADO ---');
+    updateDebug('✅ Página completamente cargada');
+    updateDebug('✅ Script inicializado correctamente');
+    updateDebug('⏳ Esperando acción del usuario o timer...');
   </script>
 </body>
 </html>
