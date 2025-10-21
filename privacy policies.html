@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Políticas de Privacidad - DALK</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --azul-principal: #0080C4;
+            --azul-oscuro: #163143;
+            --azul-claro: #E0ECFF;
+            --azul-grisaceo: #CCDBFF;
+            --naranja-acento: #CB5014;
+            --texto-oscuro: #1a1a1a;
+            --texto-claro: #666666;
+            --blanco: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.8;
+            color: var(--texto-oscuro);
+            background: var(--blanco);
+        }
+
+        /* NAVBAR */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--blanco);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 1rem 2rem;
+        }
+
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--azul-oscuro);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo img {
+            height: 45px;
+            width: auto;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-menu a {
+            text-decoration: none;
+            color: var(--texto-oscuro);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-menu a:hover {
+            color: var(--azul-principal);
+        }
+
+        /* HEADER SECTION */
+        .privacy-header {
+            margin-top: 70px;
+            background: linear-gradient(135deg, var(--azul-principal) 0%, var(--azul-oscuro) 100%);
+            color: var(--blanco);
+            padding: 4rem 2rem;
+            text-align: center;
+        }
+
+        .privacy-header h1 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+        }
+
+        .privacy-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        /* CONTENT SECTION */
+        .privacy-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section {
+            margin-bottom: 3rem;
+        }
+
+        .section h2 {
+            color: var(--azul-oscuro);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 3px solid var(--azul-principal);
+        }
+
+        .section h3 {
+            color: var(--azul-principal);
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 1.5rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .section p {
+            margin-bottom: 1rem;
+            color: var(--texto-claro);
+            font-size: 1rem;
+        }
+
+        .section ul {
+            list-style: none;
+            margin-left: 1rem;
+        }
+
+        .section ul li {
+            margin-bottom: 0.5rem;
+            color: var(--texto-claro);
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .section ul li:before {
+            content: "•";
+            color: var(--azul-principal);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        /* PERMISOS CARDS */
+        .permisos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .permiso-card {
+            background: var(--azul-claro);
+            border-left: 4px solid var(--azul-principal);
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .permiso-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 128, 196, 0.2);
+        }
+
+        .permiso-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .permiso-header i {
+            font-size: 2rem;
+            color: var(--azul-principal);
+            flex-shrink: 0;
+        }
+
+        .permiso-header h4 {
+            color: var(--azul-oscuro);
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .permiso-card p {
+            font-size: 0.9rem;
+            color: var(--texto-claro);
+            margin: 0;
+        }
+
+        /* PROVEEDORES */
+        .proveedores-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .proveedor-card {
+            background: var(--blanco);
+            border: 2px solid var(--azul-grisaceo);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .proveedor-card:hover {
+            border-color: var(--azul-principal);
+            box-shadow: 0 5px 20px rgba(0, 128, 196, 0.15);
+            transform: translateY(-5px);
+        }
+
+        .proveedor-logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--azul-claro);
+            border-radius: 50%;
+        }
+
+        .proveedor-logo i {
+            font-size: 2.5rem;
+            color: var(--azul-principal);
+        }
+
+        .proveedor-card h4 {
+            color: var(--azul-oscuro);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .proveedor-card p {
+            font-size: 0.9rem;
+            color: var(--texto-claro);
+            margin-bottom: 0;
+        }
+
+        /* CONTACT BOX */
+        .contact-box {
+            background: var(--naranja-acento);
+            padding: 2.5rem;
+            border-radius: 15px;
+            text-align: center;
+            margin-top: 2rem;
+            box-shadow: 0 5px 20px rgba(203, 80, 20, 0.3);
+        }
+
+        .contact-box h3 {
+            color: var(--blanco);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+        }
+
+        .contact-box p {
+            color: var(--blanco);
+            margin-bottom: 1rem;
+        }
+
+        .contact-box a {
+            color: var(--azul-principal);
+            font-weight: 600;
+            font-size: 1.1rem;
+            text-decoration: none;
+            border-bottom: 2px solid var(--blanco);
+            transition: all 0.3s ease;
+            padding-bottom: 2px;
+        }
+
+        .contact-box a:hover {
+            color: var(--azul-oscuro);
+            border-bottom-color: var(--azul-principal);
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--azul-oscuro);
+            color: var(--blanco);
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        footer p {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        footer a {
+            color: var(--azul-claro);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--naranja-acento);
+        }
+
+        /* RESPONSIVIDAD */
+        @media (max-width: 768px) {
+            .privacy-header h1 {
+                font-size: 2rem;
+            }
+
+            .privacy-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.5rem;
+            }
+
+            .permisos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .proveedores-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .privacy-header {
+                padding: 3rem 1.5rem;
+            }
+
+            .privacy-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .section h2 {
+                font-size: 1.3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NAVBAR -->
+    <nav>
+        <div class="navbar-container">
+            <a href="index.html" class="logo">
+                <img src="DALKLOGO_Negativo_NS.png" alt="DALK Logo">
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="index.html#about">Quiénes somos</a></li>
+                <li><a href="index.html#features">Qué ofrecemos</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- HEADER -->
+    <div class="privacy-header">
+        <h1>Políticas de Privacidad</h1>
+        <p>Última actualización: 20 de octubre de 2025</p>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="privacy-content">
+        <!-- INTRODUCCIÓN -->
+        <div class="section">
+            <h2>1. Introducción</h2>
+            <p>
+                DALK es una aplicación móvil diseñada para conectar a dueños de perros con paseadores verificados, facilitando la reserva, seguimiento y pago de paseos mediante tecnología GPS y comunicación directa. Nos comprometemos a proteger tu privacidad y manejar tus datos personales de forma responsable y transparente. Esta política explica qué información recopilamos, cómo la usamos y cuáles son tus derechos como usuario.
+            </p>
+        </div>
+
+        <!-- DATOS QUE RECOPILAMOS -->
+        <div class="section">
+            <h2>2. Datos que Recopilamos</h2>
+            
+            <h3>Información de Cuenta</h3>
+            <ul>
+                <li>Nombre completo</li>
+                <li>Correo electrónico</li>
+                <li>Número de teléfono</li>
+                <li>Foto de perfil (tomada con cámara o seleccionada desde galería)</li>
+                <li>Preferencias del usuario y perfil del perro</li>
+            </ul>
+
+            <h3>Datos de Ubicación</h3>
+            <ul>
+                <li>Coordenadas GPS en tiempo real durante los paseos</li>
+                <li>Ubicación del paseador y del perro durante el servicio</li>
+                <li>Permiso de ubicación en segundo plano (solo para paseadores)</li>
+            </ul>
+
+            <h3>Datos de Interacción</h3>
+            <ul>
+                <li>Historial de reservas y pagos</li>
+                <li>Calificaciones y reseñas realizadas</li>
+                <li>Mensajes enviados dentro del chat de la app</li>
+                <li>Notificaciones recibidas</li>
+            </ul>
+        </div>
+
+        <!-- USO DE LOS DATOS -->
+        <div class="section">
+            <h2>3. Uso de los Datos</h2>
+            <p>Utilizamos tus datos para:</p>
+            <ul>
+                <li>Conectar usuarios con paseadores disponibles</li>
+                <li>Mostrar recomendaciones personalizadas</li>
+                <li>Monitorear paseos en tiempo real</li>
+                <li>Procesar pagos de forma segura</li>
+                <li>Enviar notificaciones relevantes</li>
+                <li>Mejorar la experiencia general de la app</li>
+                <li>Garantizar la seguridad del perro durante el paseo</li>
+            </ul>
+        </div>
+
+        <!-- PERMISOS DE LA APLICACIÓN -->
+        <div class="section">
+            <h2>4. Permisos de la Aplicación</h2>
+            
+            <div class="permisos-grid">
+                <div class="permiso-card">
+                    <div class="permiso-header">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <h4>Acceso a Ubicación</h4>
+                    </div>
+                    <p>Se solicita acceso a la ubicación precisa del dispositivo para rastrear el recorrido del paseo. En el caso de los paseadores, se requiere el permiso de ubicación en segundo plano ("siempre") para garantizar el rastreo continuo, incluso cuando la app no está en primer plano.</p>
+                </div>
+
+                <div class="permiso-card">
+                    <div class="permiso-header">
+                        <i class="fas fa-camera"></i>
+                        <h4>Acceso a Cámara</h4>
+                    </div>
+                    <p>Se solicita acceso a la cámara del dispositivo para que los usuarios puedan tomar una foto de perfil directamente desde la app.</p>
+                </div>
+
+                <div class="permiso-card">
+                    <div class="permiso-header">
+                        <i class="fas fa-images"></i>
+                        <h4>Acceso a Galería</h4>
+                    </div>
+                    <p>Se solicita acceso a la galería del dispositivo para que los usuarios puedan seleccionar una imagen existente como foto de perfil.</p>
+                </div>
+
+                <div class="permiso-card">
+                    <div class="permiso-header">
+                        <i class="fas fa-wifi"></i>
+                        <h4>Acceso a Internet</h4>
+                    </div>
+                    <p>Se requiere acceso a Internet para conectar con los servicios en la nube, procesar datos, realizar pagos y mantener la funcionalidad general de la app.</p>
+                </div>
+
+                <div class="permiso-card">
+                    <div class="permiso-header">
+                        <i class="fas fa-bell"></i>
+                        <h4>Notificaciones Push</h4>
+                    </div>
+                    <p>Se solicita permiso para enviar notificaciones sobre paseos, mensajes, actualizaciones y alertas importantes relacionadas con el servicio.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- COMPARTICIÓN DE INFORMACIÓN -->
+        <div class="section">
+            <h2>5. Compartición de Información</h2>
+            
+            <h3>Con el Paseador</h3>
+            <p>Cuando reservas un paseo, compartimos información necesaria con el paseador seleccionado para que pueda brindar el servicio adecuadamente (nombre, ubicación, perfil del perro, contacto).</p>
+
+            <h3>Con Proveedores de Servicios</h3>
+            <p>Trabajamos con terceros confiables que nos ayudan a operar la aplicación:</p>
+
+            <div class="proveedores-grid">
+                <div class="proveedor-card">
+                    <div class="proveedor-logo">
+                        <i class="fab fa-stripe"></i>
+                    </div>
+                    <h4>Stripe</h4>
+                    <p>Procesamiento de pagos y transacciones seguras</p>
+                </div>
+
+                <div class="proveedor-card">
+                    <div class="proveedor-logo">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h4>Supabase</h4>
+                    <p>Almacenamiento y procesamiento de datos en la nube</p>
+                </div>
+
+                <div class="proveedor-card">
+                    <div class="proveedor-logo">
+                        <i class="fas fa-map"></i>
+                    </div>
+                    <h4>Google Maps</h4>
+                    <p>Servicios de geolocalización y mapas</p>
+                </div>
+
+                <div class="proveedor-card">
+                    <div class="proveedor-logo">
+                        <i class="fab fa-google"></i>
+                    </div>
+                    <h4>Firebase</h4>
+                    <p>Servicios de mensajería push y notificaciones</p>
+                </div>
+            </div>
+
+            <h3>Por Obligación Legal</h3>
+            <p>Podemos divulgar tu información cuando sea necesario para:</p>
+            <ul>
+                <li>Cumplir con leyes, regulaciones o procesos legales</li>
+                <li>Responder a solicitudes gubernamentales o de autoridades</li>
+                <li>Proteger la seguridad, derechos o propiedad de DALK, usuarios o terceros</li>
+                <li>Prevenir o investigar posibles fraudes o violaciones de nuestros términos</li>
+            </ul>
+        </div>
+
+        <!-- ALMACENAMIENTO Y RETENCIÓN -->
+        <div class="section">
+            <h2>6. Almacenamiento y Retención</h2>
+            
+            <h3>Dónde almacenamos</h3>
+            <ul>
+                <li>Servidores seguros en Firebase y Supabase</li>
+                <li>Almacenamiento local en tu dispositivo (para imágenes de perfil y nombres de usuario)</li>
+            </ul>
+
+            <h3>Tiempo de retención</h3>
+            <ul>
+                <li>Datos de cuenta: mientras tengas una cuenta activa</li>
+                <li>Datos de ubicación: solo durante el paseo</li>
+                <li>Historial de reservas y calificaciones: mientras uses la app</li>
+            </ul>
+        </div>
+
+        <!-- TUS DERECHOS -->
+        <div class="section">
+            <h2>7. Tus Derechos</h2>
+            <p>Tienes derecho a:</p>
+            <ul>
+                <li>Acceder, corregir o eliminar tus datos personales</li>
+                <li>Retirar tu consentimiento en cualquier momento</li>
+                <li>Solicitar información sobre el uso de tus datos</li>
+            </ul>
+
+            <div class="contact-box">
+                <h3>Contacto</h3>
+                <p>Puedes ejercer estos derechos escribiéndonos a:</p>
+                <p><a href="mailto:dalk.paseos@gmail.com">dalk.paseos@gmail.com</a></p>
+            </div>
+        </div>
+
+        <!-- CAMBIOS EN ESTA POLÍTICA -->
+        <div class="section">
+            <h2>8. Cambios en esta Política</h2>
+            <p>Nos reservamos el derecho de modificar esta política en cualquier momento. Te notificaremos dentro de la app si realizamos cambios importantes.</p>
+        </div>
+
+        <!-- ACEPTACIÓN -->
+        <div class="section">
+            <h2>9. Aceptación</h2>
+            <p>Al usar DALK, aceptas esta política de privacidad y el tratamiento de tus datos conforme a lo aquí establecido.</p>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2024 DALK. Todos los derechos reservados.</p>
+        <p><a href="index.html">Volver al inicio</a> | <a href="mailto:dalk.paseos@gmail.com">Contacto</a></p>
+    </footer>
+</body>
+</html>

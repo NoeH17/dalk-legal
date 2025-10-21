@@ -208,7 +208,7 @@
     </p>
   </div>
   
-  <script>
+<script>
 
   const debugInfo = document.getElementById('debugInfo');
   const redirectButton = document.getElementById('redirectButton');
@@ -224,46 +224,49 @@
       const urlParams = new URLSearchParams(window.location.search);
       updateDebug('✅ INICIANDO EXTRACCIÓN DE PARÁMETROS');
 
-      // Extraer parámetros principales
+      // 🔑 1. CAMBIAR 'refreshToken' por 'accessToken'
       let sessionId = urlParams.get('session_id');
       let userId = urlParams.get('user_id');
-      let refreshToken = urlParams.get('refresh_token');
+      let accessToken = urlParams.get('access_token'); // <--- ¡CORREGIDO!
 
       // Intentar extraer desde 'optionals' si no vienen directamente
-      if (!sessionId || !userId || !refreshToken) {
+      if (!sessionId || !userId || !accessToken) {
         sessionId = sessionId || urlParams.get('optionals[session_id]');
         userId = userId || urlParams.get('optionals[user_id]');
-        refreshToken = refreshToken || urlParams.get('optionals[refresh_token]');
+        accessToken = accessToken || urlParams.get('optionals[access_token]'); // <--- ¡CORREGIDO!
       }
 
       // Validar que los parámetros obligatorios estén presentes
       if (!sessionId || !userId) {
         updateDebug('❌ ERROR CRÍTICO: No se encontraron session_id o user_id.');
         alert('Error Crítico: No se pudo obtener la sesión. Contacta a soporte.');
-        return { sessionId: null, userId: null, refreshToken: null };
+        return { sessionId: null, userId: null, accessToken: null };
       }
 
       updateDebug('✅ Parámetros REALES encontrados:');
       updateDebug(`  session_id: ${sessionId}`);
       updateDebug(`  user_id: ${userId}`);
-      updateDebug(`  refresh_token: ${refreshToken}`);
+      updateDebug(`  access_token: ${accessToken}`); // <--- ¡CAMBIADO!
 
-      return { sessionId, userId, refreshToken };
+      return { sessionId, userId, accessToken }; // <--- ¡CAMBIADO!
     } catch (error) {
       updateDebug(`❌ Error extrayendo parámetros: ${error.message}`);
       console.error('❌ Error extrayendo parámetros:', error);
       alert('Error extrayendo parámetros. Contacta a soporte.');
-      return { sessionId: null, userId: null, refreshToken: null };
+      return { sessionId: null, userId: null, accessToken: null };
     }
   }
 
-  function attemptRedirect(sessionId, userId, refreshToken) {
+  // 🔑 2. CAMBIAR 'refreshToken' por 'accessToken' en la firma de la función
+  function attemptRedirect(sessionId, userId, accessToken) {
     if (!sessionId || !userId) {
       updateDebug('⚠️ Faltan parámetros requeridos, no se puede redirigir.');
       return false;
     }
 
-    const deepLink = `dalkpaseos://redirect_verificamex?session_id=${sessionId}&user_id=${userId}&refresh_token=${refreshToken}`;
+    // 🔑 3. USAR 'access_token' en el Deep Link
+    // Nota: Usamos 'access_token' en el Deep Link. El Flutter Widget debe recibirlo.
+    const deepLink = `dalkpaseos://redirect_verificamex?session_id=${sessionId}&user_id=${userId}&access_token=${accessToken}`;
 
     updateDebug('--- GENERANDO DEEP LINK ---');
     updateDebug(`Deep link: ${deepLink}`);
@@ -282,12 +285,12 @@
   }
 
   // Extraer parámetros al cargar
-  const { sessionId, userId, refreshToken } = extractParams();
+  const { sessionId, userId, accessToken } = extractParams(); // <--- ¡CAMBIADO!
 
   // Configurar botón manual
   redirectButton.addEventListener('click', () => {
     updateDebug('🖱️ === BOTÓN PRESIONADO ===');
-    attemptRedirect(sessionId, userId, refreshToken);
+    attemptRedirect(sessionId, userId, accessToken); // <--- ¡CAMBIADO!
   });
 
   // Redirección automática después de 3 segundos
@@ -296,7 +299,7 @@
       updateDebug('⏳ Redirección automática en 3 segundos...');
       setTimeout(() => {
         updateDebug('🚀 === INICIANDO REDIRECCIÓN AUTOMÁTICA ===');
-        attemptRedirect(sessionId, userId, refreshToken);
+        attemptRedirect(sessionId, userId, accessToken); // <--- ¡CAMBIADO!
       }, 3000);
     } else {
       updateDebug('❌ Redirección automática omitida por falta de parámetros.');
