@@ -83,6 +83,15 @@
             color: var(--azul-principal);
         }
 
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--azul-oscuro);
+        }
+
         /* HEADER SECTION */
         .privacy-header {
             margin-top: 70px;
@@ -285,6 +294,7 @@
             border-bottom: 2px solid var(--blanco);
             transition: all 0.3s ease;
             padding-bottom: 2px;
+            word-break: break-all;
         }
 
         .contact-box a:hover {
@@ -304,6 +314,7 @@
         footer p {
             font-size: 0.9rem;
             opacity: 0.8;
+            margin-bottom: 0.5rem;
         }
 
         footer a {
@@ -317,9 +328,71 @@
         }
 
         /* RESPONSIVIDAD */
+        @media (max-width: 1024px) {
+            .permisos-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .proveedores-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
+            nav {
+                padding: 1rem;
+            }
+
+            .nav-menu {
+                display: none;
+                position: absolute;
+                top: 60px;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background: var(--blanco);
+                gap: 0;
+                box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+                padding: 0;
+            }
+
+            .nav-menu.active {
+                display: flex;
+            }
+
+            .nav-menu li {
+                width: 100%;
+            }
+
+            .nav-menu a {
+                padding: 1rem 2rem;
+                display: block;
+                border-bottom: 1px solid #f0f0f0;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .logo {
+                font-size: 1.5rem;
+            }
+
+            .logo img {
+                height: 35px;
+            }
+
+            .privacy-header {
+                padding: 3rem 1.5rem;
+                margin-top: 60px;
+            }
+
             .privacy-header h1 {
                 font-size: 2rem;
+            }
+
+            .privacy-header p {
+                font-size: 1rem;
             }
 
             .privacy-content {
@@ -330,30 +403,169 @@
                 font-size: 1.5rem;
             }
 
+            .section h3 {
+                font-size: 1.2rem;
+            }
+
             .permisos-grid {
                 grid-template-columns: 1fr;
+                gap: 1rem;
             }
 
             .proveedores-grid {
                 grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .contact-box {
+                padding: 2rem 1.5rem;
+            }
+
+            .contact-box h3 {
+                font-size: 1.2rem;
+            }
+
+            .contact-box a {
+                font-size: 1rem;
             }
         }
 
         @media (max-width: 480px) {
             nav {
-                padding: 1rem;
+                padding: 0.8rem;
+            }
+
+            .navbar-container {
+                gap: 0.5rem;
+            }
+
+            .logo {
+                font-size: 1.3rem;
+            }
+
+            .logo img {
+                height: 30px;
             }
 
             .privacy-header {
-                padding: 3rem 1.5rem;
+                padding: 2.5rem 1rem;
             }
 
             .privacy-header h1 {
                 font-size: 1.5rem;
             }
 
+            .privacy-header p {
+                font-size: 0.9rem;
+            }
+
+            .privacy-content {
+                padding: 1.5rem 1rem;
+            }
+
+            .section {
+                margin-bottom: 2rem;
+            }
+
             .section h2 {
                 font-size: 1.3rem;
+            }
+
+            .section h3 {
+                font-size: 1.1rem;
+            }
+
+            .section p {
+                font-size: 0.95rem;
+            }
+
+            .section ul li {
+                font-size: 0.95rem;
+            }
+
+            .permiso-card {
+                padding: 1.2rem;
+            }
+
+            .permiso-header {
+                gap: 0.8rem;
+            }
+
+            .permiso-header i {
+                font-size: 1.5rem;
+            }
+
+            .permiso-header h4 {
+                font-size: 1rem;
+            }
+
+            .permiso-card p {
+                font-size: 0.85rem;
+            }
+
+            .proveedor-card {
+                padding: 1.2rem;
+            }
+
+            .proveedor-logo {
+                width: 60px;
+                height: 60px;
+            }
+
+            .proveedor-logo i {
+                font-size: 2rem;
+            }
+
+            .proveedor-card h4 {
+                font-size: 1.1rem;
+            }
+
+            .proveedor-card p {
+                font-size: 0.85rem;
+            }
+
+            .contact-box {
+                padding: 1.5rem 1rem;
+            }
+
+            .contact-box h3 {
+                font-size: 1.1rem;
+            }
+
+            .contact-box p {
+                font-size: 0.9rem;
+            }
+
+            .contact-box a {
+                font-size: 0.9rem;
+            }
+
+            footer {
+                padding: 1.5rem 1rem;
+            }
+
+            footer p {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .privacy-header h1 {
+                font-size: 1.3rem;
+            }
+
+            .section h2 {
+                font-size: 1.2rem;
+            }
+
+            .permiso-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.5rem;
+            }
+
+            .permiso-header i {
+                font-size: 1.8rem;
             }
         }
     </style>
@@ -365,7 +577,10 @@
             <a href="index.html" class="logo">
                 <img src="DALKLOGO_Negativo_NS.png" alt="DALK Logo">
             </a>
-            <ul class="nav-menu">
+            <button class="nav-toggle" id="navToggle">
+                <i class="fas fa-bars"></i>
+            </button>
+            <ul class="nav-menu" id="navMenu">
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="index.html#about">Quiénes somos</a></li>
                 <li><a href="index.html#features">Qué ofrecemos</a></li>
@@ -587,5 +802,22 @@
         <p>&copy; 2024 DALK. Todos los derechos reservados.</p>
         <p><a href="index.html">Volver al inicio</a> | <a href="mailto:dalk.paseos@gmail.com">Contacto</a></p>
     </footer>
+
+    <script>
+        // Mobile menu toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        navToggle.addEventListener('click', () => {
+            navMenu.classList.toggle('active');
+        });
+
+        // Close menu when a link is clicked
+        document.querySelectorAll('.nav-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                navMenu.classList.remove('active');
+            });
+        });
+    </script>
 </body>
 </html>
