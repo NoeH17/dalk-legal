@@ -124,9 +124,7 @@
     }
 
     .debug-info {
-      /* Ocultar en producción, mantener visible si es necesario */
-      /*display: none; */
-      display: block !important; /* <-- así se mostrará */
+      display: block;
       margin-top: 20px;
       padding: 12px;
       background: rgba(0, 0, 0, 0.5);
@@ -159,6 +157,11 @@
       background: #006AA0;
       transform: translateY(-2px);
       box-shadow: 0 6px 20px rgba(0, 128, 196, 0.4);
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
     }
   </style>
 </head>
@@ -203,109 +206,149 @@
     </div>
     
     <p class="close-message">
-      Si la redirección no funciona automáticamente,<br>
-      presiona el botón de arriba para regresar a la app.
+      ⚠️ Si la redirección no funciona automáticamente, presiona el botón de arriba.
     </p>
   </div>
   
-<script>
+  <script>
+    console.log('🎯 ========================================');
+    console.log('🎯 PÁGINA DE REDIRECCIÓN INICIADA');
+    console.log('🎯 ========================================');
 
-  const debugInfo = document.getElementById('debugInfo');
-  const redirectButton = document.getElementById('redirectButton');
+    const debugInfo = document.getElementById('debugInfo');
+    const redirectButton = document.getElementById('redirectButton');
 
-  function updateDebug(message) {
-    const timestamp = new Date().toLocaleTimeString();
-    debugInfo.innerHTML += `<br>[${timestamp}] ${message}`;
-    debugInfo.scrollTop = debugInfo.scrollHeight;
-  }
+    function updateDebug(message) {
+      const timestamp = new Date().toLocaleTimeString();
+      console.log(message);
+      debugInfo.innerHTML += `<br>[${timestamp}] ${message}`;
+      debugInfo.scrollTop = debugInfo.scrollHeight;
+    }
 
-  function extractParams() {
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      updateDebug('✅ INICIANDO EXTRACCIÓN DE PARÁMETROS');
+    function extractParams() {
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        updateDebug('🔍 ========================================');
+        updateDebug('🔍 EXTRAYENDO PARÁMETROS DE LA URL');
+        updateDebug('🔍 ========================================');
+        
+        // 🔑 EXTRAER SOLO session_id y user_id (sin access_token)
+        let sessionId = urlParams.get('session_id');
+        let userId = urlParams.get('user_id');
 
-      // 🔑 1. CAMBIAR 'refreshToken' por 'accessToken'
-      let sessionId = urlParams.get('session_id');
-      let userId = urlParams.get('user_id');
-      let accessToken = urlParams.get('access_token'); // <--- ¡CORREGIDO!
+        updateDebug(`📦 URL completa: ${window.location.href}`);
+        updateDebug(`📦 Query string: ${window.location.search}`);
+        
+        // Intentar extraer desde 'optionals' si no vienen directamente
+        if (!sessionId || !userId) {
+          updateDebug('⚠️ Parámetros no encontrados directamente, buscando en optionals...');
+          sessionId = sessionId || urlParams.get('optionals[session_id]');
+          userId = userId || urlParams.get('optionals[user_id]');
+        }
 
-      // Intentar extraer desde 'optionals' si no vienen directamente
-      if (!sessionId || !userId || !accessToken) {
-        sessionId = sessionId || urlParams.get('optionals[session_id]');
-        userId = userId || urlParams.get('optionals[user_id]');
-        accessToken = accessToken || urlParams.get('optionals[access_token]'); // <--- ¡CORREGIDO!
+        // Validar que los parámetros obligatorios estén presentes
+        if (!sessionId || !userId) {
+          updateDebug('❌ ERROR CRÍTICO: Faltan session_id o user_id');
+          updateDebug('❌ Esto indica un problema en la configuración de Verificamex');
+          alert('Error Crítico: No se recibieron los datos necesarios. Contacta a soporte.');
+          return { sessionId: null, userId: null };
+        }
+
+        updateDebug('✅ ========================================');
+        updateDebug('✅ PARÁMETROS EXTRAÍDOS EXITOSAMENTE');
+        updateDebug('✅ ========================================');
+        updateDebug(`✅ session_id: ${sessionId}`);
+        updateDebug(`✅ user_id: ${userId}`);
+        updateDebug('');
+        updateDebug('🔑 ========================================');
+        updateDebug('🔑 NOTA: Access Token será recuperado desde BD');
+        updateDebug('🔑 La app Flutter obtendrá el token automáticamente');
+        updateDebug('🔑 usando el user_id cuando sea necesario');
+        updateDebug('🔑 ========================================');
+
+        return { sessionId, userId };
+      } catch (error) {
+        updateDebug(`❌ Excepción al extraer parámetros: ${error.message}`);
+        console.error('❌ Error:', error);
+        alert('Error técnico al procesar la respuesta. Contacta a soporte.');
+        return { sessionId: null, userId: null };
       }
+    }
 
-      // Validar que los parámetros obligatorios estén presentes
+    function attemptRedirect(sessionId, userId) {
       if (!sessionId || !userId) {
-        updateDebug('❌ ERROR CRÍTICO: No se encontraron session_id o user_id.');
-        alert('Error Crítico: No se pudo obtener la sesión. Contacta a soporte.');
-        return { sessionId: null, userId: null, accessToken: null };
+        updateDebug('⚠️ No se puede redirigir sin los parámetros requeridos');
+        return false;
       }
 
-      updateDebug('✅ Parámetros REALES encontrados:');
-      updateDebug(`  session_id: ${sessionId}`);
-      updateDebug(`  user_id: ${userId}`);
-      updateDebug(`  access_token: ${accessToken}`); // <--- ¡CAMBIADO!
+      // 🔑 CONSTRUIR DEEP LINK SOLO CON session_id y user_id
+      const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(userId)}`;
 
-      return { sessionId, userId, accessToken }; // <--- ¡CAMBIADO!
-    } catch (error) {
-      updateDebug(`❌ Error extrayendo parámetros: ${error.message}`);
-      console.error('❌ Error extrayendo parámetros:', error);
-      alert('Error extrayendo parámetros. Contacta a soporte.');
-      return { sessionId: null, userId: null, accessToken: null };
+      updateDebug('🔗 ========================================');
+      updateDebug('🔗 GENERANDO DEEP LINK');
+      updateDebug('🔗 ========================================');
+      updateDebug(`🔗 Deep Link: ${deepLink}`);
+      updateDebug('🔗 Nota: Access token NO incluido (se recupera de BD)');
+      updateDebug('🔗 ========================================');
+
+      try {
+        updateDebug('🚀 Ejecutando redirección...');
+        window.location.href = deepLink;
+        
+        updateDebug('✅ Redirección iniciada correctamente');
+        updateDebug('✅ Esperando que la aplicación se abra...');
+        
+        return true;
+      } catch (error) {
+        updateDebug(`❌ Error en redirección: ${error.message}`);
+        console.error('❌ Error:', error);
+        alert('Error al intentar abrir la aplicación. Por favor, inténtalo manualmente.');
+        return false;
+      }
     }
-  }
 
-  // 🔑 2. CAMBIAR 'refreshToken' por 'accessToken' en la firma de la función
-  function attemptRedirect(sessionId, userId, accessToken) {
-    if (!sessionId || !userId) {
-      updateDebug('⚠️ Faltan parámetros requeridos, no se puede redirigir.');
-      return false;
-    }
+    // ✅ EXTRAER PARÁMETROS AL CARGAR (sin access_token)
+    const { sessionId, userId } = extractParams();
 
-    // 🔑 3. USAR 'access_token' en el Deep Link
-    // Nota: Usamos 'access_token' en el Deep Link. El Flutter Widget debe recibirlo.
-    const deepLink = `dalkpaseos://redirect_verificamex?session_id=${sessionId}&user_id=${userId}&access_token=${accessToken}`;
+    // ✅ CONFIGURAR BOTÓN MANUAL
+    redirectButton.addEventListener('click', () => {
+      updateDebug('');
+      updateDebug('🖱️ ========================================');
+      updateDebug('🖱️ BOTÓN MANUAL PRESIONADO');
+      updateDebug('🖱️ ========================================');
+      const success = attemptRedirect(sessionId, userId);
+      
+      if (!success) {
+        updateDebug('❌ La redirección manual falló');
+      }
+    });
 
-    updateDebug('--- GENERANDO DEEP LINK ---');
-    updateDebug(`Deep link: ${deepLink}`);
-    console.log('➡️ Intentando redirección:', deepLink);
+    // ✅ REDIRECCIÓN AUTOMÁTICA DESPUÉS DE 2 SEGUNDOS
+    window.addEventListener('load', () => {
+      if (sessionId && userId) {
+        updateDebug('');
+        updateDebug('⏳ ========================================');
+        updateDebug('⏳ PROGRAMANDO REDIRECCIÓN AUTOMÁTICA');
+        updateDebug('⏳ Redirigiendo en 2 segundos...');
+        updateDebug('⏳ ========================================');
+        
+        setTimeout(() => {
+          updateDebug('');
+          updateDebug('🚀 ========================================');
+          updateDebug('🚀 EJECUTANDO REDIRECCIÓN AUTOMÁTICA');
+          updateDebug('🚀 ========================================');
+          attemptRedirect(sessionId, userId);
+        }, 2000);
+      } else {
+        updateDebug('');
+        updateDebug('❌ ========================================');
+        updateDebug('❌ REDIRECCIÓN AUTOMÁTICA CANCELADA');
+        updateDebug('❌ Faltan parámetros necesarios');
+        updateDebug('❌ ========================================');
+      }
+    });
 
-    try {
-      updateDebug('🚀 Ejecutando redirección...');
-      window.location.href = deepLink;
-      updateDebug('✅ Redirección iniciada');
-      return true;
-    } catch (error) {
-      updateDebug(`❌ Error en redirección: ${error.message}`);
-      console.error('❌ Error en redirección:', error);
-      return false;
-    }
-  }
-
-  // Extraer parámetros al cargar
-  const { sessionId, userId, accessToken } = extractParams(); // <--- ¡CAMBIADO!
-
-  // Configurar botón manual
-  redirectButton.addEventListener('click', () => {
-    updateDebug('🖱️ === BOTÓN PRESIONADO ===');
-    attemptRedirect(sessionId, userId, accessToken); // <--- ¡CAMBIADO!
-  });
-
-  // Redirección automática después de 3 segundos
-  window.addEventListener('load', () => {
-    if (sessionId && userId) {
-      updateDebug('⏳ Redirección automática en 3 segundos...');
-      setTimeout(() => {
-        updateDebug('🚀 === INICIANDO REDIRECCIÓN AUTOMÁTICA ===');
-        attemptRedirect(sessionId, userId, accessToken); // <--- ¡CAMBIADO!
-      }, 3000);
-    } else {
-      updateDebug('❌ Redirección automática omitida por falta de parámetros.');
-    }
-  });
-</script>
-
+    console.log('🎯 Script de redirección cargado completamente');
+  </script>
 </body>
 </html>
