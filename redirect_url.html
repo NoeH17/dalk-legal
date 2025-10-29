@@ -211,144 +211,50 @@
   </div>
   
   <script>
-    console.log('🎯 ========================================');
-    console.log('🎯 PÁGINA DE REDIRECCIÓN INICIADA');
-    console.log('🎯 ========================================');
+  document.addEventListener("DOMContentLoaded", async () => {
+    const params = new URLSearchParams(window.location.search);
+    const sessionId = params.get("session_id");
+    const userId = params.get("user_id");
+    const debug = document.getElementById("debugInfo");
 
-    const debugInfo = document.getElementById('debugInfo');
-    const redirectButton = document.getElementById('redirectButton');
+    debug.innerHTML += `<br>session_id: ${sessionId}<br>user_id: ${userId}`;
 
-    function updateDebug(message) {
-      const timestamp = new Date().toLocaleTimeString();
-      console.log(message);
-      debugInfo.innerHTML += `<br>[${timestamp}] ${message}`;
-      debugInfo.scrollTop = debugInfo.scrollHeight;
-    }
+    // 1️⃣ Intentar abrir el deep link hacia la app
+    const deepLink = `dalkpaseos://redirect_verificamex?session_id=${sessionId}&user_id=${userId}`;
+    debug.innerHTML += `<br>Intentando abrir deep link: ${deepLink}`;
 
-    function extractParams() {
-      try {
-        const urlParams = new URLSearchParams(window.location.search);
-        updateDebug('🔍 ========================================');
-        updateDebug('🔍 EXTRAYENDO PARÁMETROS DE LA URL');
-        updateDebug('🔍 ========================================');
-        
-        // 🔑 EXTRAER SOLO session_id y user_id (sin access_token)
-        let sessionId = urlParams.get('session_id');
-        let userId = urlParams.get('user_id');
+    // 2️⃣ Redirigir al deep link después de un pequeño delay
+    setTimeout(() => {
+      window.location.href = deepLink;
+    }, 1500);
 
-        updateDebug(`📦 URL completa: ${window.location.href}`);
-        updateDebug(`📦 Query string: ${window.location.search}`);
-        
-        // Intentar extraer desde 'optionals' si no vienen directamente
-        if (!sessionId || !userId) {
-          updateDebug('⚠️ Parámetros no encontrados directamente, buscando en optionals...');
-          sessionId = sessionId || urlParams.get('optionals[session_id]');
-          userId = userId || urlParams.get('optionals[user_id]');
-        }
-
-        // Validar que los parámetros obligatorios estén presentes
-        if (!sessionId || !userId) {
-          updateDebug('❌ ERROR CRÍTICO: Faltan session_id o user_id');
-          updateDebug('❌ Esto indica un problema en la configuración de Verificamex');
-          alert('Error Crítico: No se recibieron los datos necesarios. Contacta a soporte.');
-          return { sessionId: null, userId: null };
-        }
-
-        updateDebug('✅ ========================================');
-        updateDebug('✅ PARÁMETROS EXTRAÍDOS EXITOSAMENTE');
-        updateDebug('✅ ========================================');
-        updateDebug(`✅ session_id: ${sessionId}`);
-        updateDebug(`✅ user_id: ${userId}`);
-        updateDebug('');
-        updateDebug('🔑 ========================================');
-        updateDebug('🔑 NOTA: Access Token será recuperado desde BD');
-        updateDebug('🔑 La app Flutter obtendrá el token automáticamente');
-        updateDebug('🔑 usando el user_id cuando sea necesario');
-        updateDebug('🔑 ========================================');
-
-        return { sessionId, userId };
-      } catch (error) {
-        updateDebug(`❌ Excepción al extraer parámetros: ${error.message}`);
-        console.error('❌ Error:', error);
-        alert('Error técnico al procesar la respuesta. Contacta a soporte.');
-        return { sessionId: null, userId: null };
-      }
-    }
-
-    function attemptRedirect(sessionId, userId) {
-      if (!sessionId || !userId) {
-        updateDebug('⚠️ No se puede redirigir sin los parámetros requeridos');
-        return false;
-      }
-
-      // 🔑 CONSTRUIR DEEP LINK SOLO CON session_id y user_id
-      const deepLink = `dalkpaseos://redirect_verificamex?session_id=${encodeURIComponent(sessionId)}&user_id=${encodeURIComponent(userId)}`;
-
-      updateDebug('🔗 ========================================');
-      updateDebug('🔗 GENERANDO DEEP LINK');
-      updateDebug('🔗 ========================================');
-      updateDebug(`🔗 Deep Link: ${deepLink}`);
-      updateDebug('🔗 Nota: Access token NO incluido (se recupera de BD)');
-      updateDebug('🔗 ========================================');
-
-      try {
-        updateDebug('🚀 Ejecutando redirección...');
-        window.location.href = deepLink;
-        
-        updateDebug('✅ Redirección iniciada correctamente');
-        updateDebug('✅ Esperando que la aplicación se abra...');
-        
-        return true;
-      } catch (error) {
-        updateDebug(`❌ Error en redirección: ${error.message}`);
-        console.error('❌ Error:', error);
-        alert('Error al intentar abrir la aplicación. Por favor, inténtalo manualmente.');
-        return false;
-      }
-    }
-
-    // ✅ EXTRAER PARÁMETROS AL CARGAR (sin access_token)
-    const { sessionId, userId } = extractParams();
-
-    // ✅ CONFIGURAR BOTÓN MANUAL
-    redirectButton.addEventListener('click', () => {
-      updateDebug('');
-      updateDebug('🖱️ ========================================');
-      updateDebug('🖱️ BOTÓN MANUAL PRESIONADO');
-      updateDebug('🖱️ ========================================');
-      const success = attemptRedirect(sessionId, userId);
-      
-      if (!success) {
-        updateDebug('❌ La redirección manual falló');
-      }
+    // 3️⃣ Botón manual de regreso
+    document.getElementById("redirectButton").addEventListener("click", () => {
+      window.location.href = deepLink;
     });
 
-    // ✅ REDIRECCIÓN AUTOMÁTICA DESPUÉS DE 2 SEGUNDOS
-    window.addEventListener('load', () => {
-      if (sessionId && userId) {
-        updateDebug('');
-        updateDebug('⏳ ========================================');
-        updateDebug('⏳ PROGRAMANDO REDIRECCIÓN AUTOMÁTICA');
-        updateDebug('⏳ Redirigiendo en 2 segundos...');
-        updateDebug('⏳ ========================================');
-        
-        setTimeout(() => {
-          updateDebug('');
-          updateDebug('🚀 ========================================');
-          updateDebug('🚀 EJECUTANDO REDIRECCIÓN AUTOMÁTICA');
-          updateDebug('🚀 ========================================');
-          attemptRedirect(sessionId, userId);
-        }, 2000);
-      } else {
-        updateDebug('');
-        updateDebug('❌ ========================================');
-        updateDebug('❌ REDIRECCIÓN AUTOMÁTICA CANCELADA');
-        updateDebug('❌ Faltan parámetros necesarios');
-        updateDebug('❌ ========================================');
+    // 4️⃣ (Opcional) Consultar Supabase para mostrar el estado en tiempo real
+    const checkStatus = async () => {
+      try {
+        const response = await fetch(
+          "https://bsactypehgxluqyaymui.supabase.co/functions/v1/get_verification_status",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ session_id: sessionId }),
+          }
+        );
+        const data = await response.json();
+        debug.innerHTML += `<br>Estado actual: ${data.status || 'Desconocido'}`;
+      } catch (e) {
+        debug.innerHTML += `<br>Error consultando estado: ${e.message}`;
       }
-    });
+    };
 
-    console.log('🎯 Script de redirección cargado completamente');
-  </script>
+    // Revisa cada 5 segundos el estado (si el usuario se queda en web)
+    setInterval(checkStatus, 5000);
+  });
+</script>
+
 </body>
 </html>
