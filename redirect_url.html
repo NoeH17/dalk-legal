@@ -220,7 +220,7 @@
     debug.innerHTML += `<br>session_id: ${sessionId}<br>user_id: ${userId}`;
 
     // 1️⃣ Intentar abrir el deep link hacia la app
-    const deepLink = `dalkpaseos://redirect_verificamex?session_id=${sessionId}&user_id=${userId}`;
+    const deepLink = `dalkpaseos://verification_callback?status=success&session_id=${sessionId}&user_id=${userId}`;
     debug.innerHTML += `<br>Intentando abrir deep link: ${deepLink}`;
 
     // 2️⃣ Redirigir al deep link después de un pequeño delay
