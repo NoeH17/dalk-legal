@@ -211,50 +211,62 @@
   </div>
   
   <script>
-  document.addEventListener("DOMContentLoaded", async () => {
-    const params = new URLSearchParams(window.location.search);
-    const sessionId = params.get("session_id");
-    const userId = params.get("user_id");
-    const debug = document.getElementById("debugInfo");
+        document.addEventListener("DOMContentLoaded", async () => {
+            // 1️⃣ EXTRAER PARÁMETROS DE LA URL
+            const params = new URLSearchParams(window.location.search);
+            const sessionId = params.get("session_id");
+            const userId = params.get("user_id");
+            
+            const debug = document.getElementById("debugInfo");
+            const redirectButton = document.getElementById("redirectButton");
 
-    debug.innerHTML += `<br>session_id: ${sessionId}<br>user_id: ${userId}`;
+            // 2️⃣ MOSTRAR DEBUG INFO
+            debug.innerHTML = `
+                <strong>Debug Info:</strong><br>
+                URL completa: ${window.location.href}<br>
+                session_id: ${sessionId || '❌ FALTA'}<br>
+                user_id: ${userId || '❌ FALTA'}
+            `;
 
-    // 1️⃣ Intentar abrir el deep link hacia la app
-    const deepLink = `dalkpaseos://verification_callback?status=success&session_id=${sessionId}&user_id=${userId}`;
-    debug.innerHTML += `<br>Intentando abrir deep link: ${deepLink}`;
+            console.log('📋 Parámetros extraídos:', { sessionId, userId });
 
-    // 2️⃣ Redirigir al deep link después de un pequeño delay
-    setTimeout(() => {
-      window.location.href = deepLink;
-    }, 1500);
+            // 3️⃣ VALIDAR PARÁMETROS
+            if (!sessionId || !userId) {
+                debug.innerHTML += '<br><strong style="color: red;">ERROR: Faltan parámetros</strong>';
+                redirectButton.style.display = 'block';
+                redirectButton.textContent = 'Error: No se puede redirigir';
+                redirectButton.disabled = true;
+                return;
+            }
 
-    // 3️⃣ Botón manual de regreso
-    document.getElementById("redirectButton").addEventListener("click", () => {
-      window.location.href = deepLink;
-    });
+            // 4️⃣ CONSTRUIR DEEP LINK (SIN status=success)
+            const deepLink = `dalkpaseos://verification_callback?session_id=${sessionId}&user_id=${userId}`;
+            
+            debug.innerHTML += `<br>Deep link: ${deepLink}`;
+            console.log('🔗 Deep link construido:', deepLink);
 
-    // 4️⃣ (Opcional) Consultar Supabase para mostrar el estado en tiempo real
-    const checkStatus = async () => {
-      try {
-        const response = await fetch(
-          "https://bsactypehgxluqyaymui.supabase.co/functions/v1/get_verification_status",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ session_id: sessionId }),
-          }
-        );
-        const data = await response.json();
-        debug.innerHTML += `<br>Estado actual: ${data.status || 'Desconocido'}`;
-      } catch (e) {
-        debug.innerHTML += `<br>Error consultando estado: ${e.message}`;
-      }
-    };
+            // 5️⃣ INTENTAR ABRIR DEEP LINK AUTOMÁTICAMENTE
+            setTimeout(() => {
+                console.log('🚀 Ejecutando deep link...');
+                window.location.href = deepLink;
+                
+                // Mostrar botón manual después de 3 segundos (por si no abrió)
+                setTimeout(() => {
+                    redirectButton.style.display = 'block';
+                }, 3000);
+            }, 1500);
 
-    // Revisa cada 5 segundos el estado (si el usuario se queda en web)
-    setInterval(checkStatus, 5000);
-  });
-</script>
+            // 6️⃣ BOTÓN MANUAL DE REGRESO
+            redirectButton.addEventListener("click", () => {
+                console.log('👆 Usuario clickeó botón manual');
+                window.location.href = deepLink;
+            });
+
+            // Consultar estado cada 5 segundos
+            setInterval(checkStatus, 5000);
+            checkStatus(); // Primera consulta inmediata
+        });
+    </script>
 
 </body>
 </html>
